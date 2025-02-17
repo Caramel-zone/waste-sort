@@ -1,0 +1,83 @@
+/* General Body Styling */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+/* Container for centering content */
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+    text-align: center;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Title Styling */
+.title {
+    color: #2c3e50;
+    font-size: 36px;
+    margin-bottom: 20px;
+    font-weight: 600;
+}
+
+/* Categories Container */
+.categories-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    margin-top: 20px;
+}
+
+/* Category Card Styling */
+.category-card {
+    background-color: #ecf0f1;
+    padding: 20px;
+    margin: 15px;
+    border-radius: 8px;
+    width: 200px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.category-card:hover {
+    transform: scale(1.05);
+}
+
+.category-icon {
+    width: 50px;
+    height: 50px;
+    margin-bottom: 10px;
+}
+
+.category-name {
+    font-size: 20px;
+    margin: 10px 0;
+}
+
+.category-count {
+    font-size: 16px;
+    color: #2980b9;
+}
+
+/* Go Back Button */
+button {
+    padding: 10px 20px;
+    background-color: #2980b9;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+    font-size: 16px;
+}
+
+button:hover {
+    background-color: #3498db;
+}

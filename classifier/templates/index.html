@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <title>Waste Sorting App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .title {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: #4CAF50;
+        }
+
+        .form-container {
+            margin-bottom: 30px;
+        }
+
+        .form-container h2 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .file-input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .upload-btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .upload-btn:hover {
+            background-color: #45a049;
+        }
+
+        .capture-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        video, canvas {
+            max-width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        #capture-btn, #start-record-btn, #stop-record-btn {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 10px 5px 0;
+        }
+
+        #capture-btn:hover, #start-record-btn:hover, #stop-record-btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1 class="title">Waste Sorting App</h1>
+
+        <!-- Image Upload Form -->
+        <div class="form-container">
+            <h2>Upload or Capture an Image</h2>
+            <form id="image-form" enctype="multipart/form-data" method="post">
+                {% csrf_token %}
+                <input type="file" name="image" id="image-input" class="file-input" accept="image/*">
+                <button type="submit" class="upload-btn">Upload Image</button>
+            </form>
+            <div class="capture-container">
+                <video id="video" autoplay></video>
+                <canvas id="canvas" style="display:none;"></canvas>
+                <button id="capture-btn">Capture Image</button>
+            </div>
+        </div>
+
+        <!-- Video Upload Form -->
+        <div class="form-container">
+            <h2>Upload or Capture a Video</h2>
+            <form id="video-form" enctype="multipart/form-data" method="post">
+                {% csrf_token %}
+                <input type="file" name="video" id="video-input" class="file-input" accept="video/*">
+                <button type="submit" class="upload-btn">Upload Video</button>
+            </form>
+            <div class="capture-container">
+                <video id="video-capture" autoplay muted></video>
+                <button id="start-record-btn">Start Recording</button>
+                <button id="stop-record-btn" disabled>Stop Recording</button>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div id="results" class="results-container">
+            <!-- The results will be displayed here after submission -->
+        </div>
+    </div>
+
+    <script>
+        // Helper: Get CSRF Token from Cookies
+        function getCSRFToken() {
+            const cookies = document.cookie.split(';');
+            for (let cookie of cookies) {
+                cookie = cookie.trim();
+                if (cookie.startsWith('csrftoken=')) {
+                    return cookie.substring('csrftoken='.length);
+                }
+            }
+            return null;
+        }
+
+        // Image Capture and Upload
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const captureBtn = document.getElementById('capture-btn');
+
+        navigator.mediaDevices.getUserMedia({ video: { width: 1280, height: 720 }, audio: false })
+            .then((stream) => {
+                video.srcObject = stream;
+
+                captureBtn.addEventListener('click', () => {
+                    canvas.width = video.videoWidth;
+                    canvas.height = video.videoHeight;
+                    const context = canvas.getContext('2d');
+                    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+                    canvas.toBlob((blob) => {
+                        const formData = new FormData();
+                        formData.append('image', blob, 'captured_image.jpg');
+
+                        fetch('/process_image/', {
+                            method: 'POST',
+                            body: formData,
+                            headers: { 'X-CSRFToken': getCSRFToken() },
+                        }).then((response) => {
+                            if (response.ok) {
+                                window.location.href = '/results/';
+                            } else {
+                                throw new Error("Image processing failed.");
+                            }
+                        }).catch((error) => {
+                            document.getElementById("results").innerHTML = `<p>${error.message}</p>`;
+                        });
+                    });
+                });
+            })
+            .catch((error) => {
+                console.error("Camera access error:", error);
+            });
+
+        // Video Recording and Upload
+        const videoCapture = document.getElementById('video-capture');
+        const startRecordBtn = document.getElementById('start-record-btn');
+        const stopRecordBtn = document.getElementById('stop-record-btn');
+        let mediaRecorder;
+        let recordedChunks = [];
+
+        navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+            .then((stream) => {
+                videoCapture.srcObject = stream;
+                mediaRecorder = new MediaRecorder(stream);
+
+                mediaRecorder.ondataavailable = (event) => {
+                    if (event.data.size > 0) {
+                        recordedChunks.push(event.data);
+                    }
+                };
+
+                mediaRecorder.onstop = () => {
+                    const blob = new Blob(recordedChunks, { type: 'video/mp4' });
+                    const formData = new FormData();
+                    formData.append('video', blob, 'captured_video.mp4');
+
+                    fetch('/process_video/', {
+                        method: 'POST',
+                        body: formData,
+                        headers: { 'X-CSRFToken': getCSRFToken() },
+                    }).then((response) => {
+                        if (response.ok) {
+                            response.json().then((data) => {
+                                document.getElementById('results').innerHTML = `<h3>Processed Video:</h3><pre>${JSON.stringify(data, null, 2)}</pre>`;
+                            });
+                        } else {
+                            throw new Error("Video processing failed.");
+                        }
+                    }).catch((error) => {
+                        document.getElementById("results").innerHTML = `<p>${error.message}</p>`;
+                    });
+                };
+
+                startRecordBtn.addEventListener('click', () => {
+                    recordedChunks = [];
+                    mediaRecorder.start();
+                    startRecordBtn.disabled = true;
+                    stopRecordBtn.disabled = false;
+                });
+
+                stopRecordBtn.addEventListener('click', () => {
+                    mediaRecorder.stop();
+                    startRecordBtn.disabled = false;
+                    stopRecordBtn.disabled = true;
+                });
+            })
+            .catch((error) => {
+                console.error("Camera and microphone access error:", error);
+            });
+    </script>
+</body>
+
+</html>
