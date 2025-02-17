@@ -1,0 +1,96 @@
+{% load custom_filters %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Processed Results</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            background: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #4CAF50;
+        }
+
+        .results {
+            padding: 10px 20px;
+        }
+
+        .results h2 {
+            font-size: 1.5em;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 5px;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        ul li {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        ul li img {
+            margin-right: 15px;
+            border-radius: 5px;
+        }
+
+        .back-btn {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: #fff;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+
+        .back-btn:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Processed Results</h1>
+
+        <div class="results">
+            <h2>Categories:</h2>
+            <ul>
+                <li><img src="/static/icons/plastic.png" width="40"> <strong>Plastic:</strong> <span>{{ counts|get_item:'Plastic'|default:0 }}</span></li>
+                <li><img src="/static/icons/metal.png" width="40"> <strong>Metal:</strong> <span>{{ counts|get_item:'Metal'|default:0 }}</span></li>
+                <li><img src="/static/icons/glass.png" width="40"> <strong>Glass:</strong> <span>{{ counts|get_item:'Glass'|default:0 }}</span></li>
+                <li><img src="/static/icons/paper.png" width="40"> <strong>Paper:</strong> <span>{{ counts|get_item:'Paper'|default:0 }}</span></li>
+            </ul>
+
+            {% if processed_image %}
+                <h2>Processed Image:</h2>
+                <img src="{{ OUTPUT_URL }}processed_image.jpg" alt="Processed Image">
+            {% endif %}
+        </div>
+
+        <a href="/" class="back-btn">Back to Upload</a>
+    </div>
+</body>
+</html>
