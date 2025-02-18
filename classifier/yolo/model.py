@@ -3,13 +3,10 @@ import cv2
 import numpy as np
 import os
 
-# Load the YOLO model
-model = YOLO(r"C:\Users\Sanjay Carmel\Documents\capstone\capstone\classifier\yolo\best_50.pt")
-
-# Get the base directory
+# # Get the base directory
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-# Define output folder path
+model = YOLO(r"best_50.pt")
 OUTPUT_DIR = os.path.join(BASE_DIR, 'output')
 
 # Create the output directory if it doesn't exist

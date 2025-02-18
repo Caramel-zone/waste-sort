@@ -1,83 +1,84 @@
-/* General Body Styling */
 body {
-    font-family: 'Arial', sans-serif;
-    background-color: #f4f4f4;
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
     color: #333;
-    margin: 0;
-    padding: 0;
-}
+    padding: 20px;
+  }
 
-/* Container for centering content */
-.container {
+  .container {
     max-width: 900px;
     margin: 0 auto;
+    background-color: #fff;
     padding: 20px;
-    text-align: center;
-    background-color: white;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
+  }
 
-/* Title Styling */
-.title {
-    color: #2c3e50;
-    font-size: 36px;
-    margin-bottom: 20px;
-    font-weight: 600;
-}
-
-/* Categories Container */
-.categories-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-around;
-    margin-top: 20px;
-}
-
-/* Category Card Styling */
-.category-card {
-    background-color: #ecf0f1;
-    padding: 20px;
-    margin: 15px;
-    border-radius: 8px;
-    width: 200px;
+  .title {
     text-align: center;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease;
-}
+    font-size: 2rem;
+    margin-bottom: 20px;
+    color: #4caf50;
+  }
 
-.category-card:hover {
-    transform: scale(1.05);
-}
+  .form-container {
+    margin-bottom: 30px;
+  }
 
-.category-icon {
-    width: 50px;
-    height: 50px;
-    margin-bottom: 10px;
-}
+  .form-container h2 {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+    color: #333;
+  }
 
-.category-name {
-    font-size: 20px;
-    margin: 10px 0;
-}
+  .file-input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
 
-.category-count {
-    font-size: 16px;
-    color: #2980b9;
-}
-
-/* Go Back Button */
-button {
-    padding: 10px 20px;
-    background-color: #2980b9;
+  .upload-btn {
+    background-color: #4caf50;
     color: white;
+    padding: 12px 20px;
     border: none;
-    border-radius: 5px;
+    border-radius: 4px;
     cursor: pointer;
-    margin-top: 20px;
-    font-size: 16px;
-}
+    width: 100%;
+  }
 
-button:hover {
-    background-color: #3498db;
-}
+  .upload-btn:hover {
+    background-color: #45a049;
+  }
+
+  .capture-container {
+    text-align: center;
+    margin-top: 20px;
+  }
+
+  video,
+  canvas {
+    max-width: 100%;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+
+  #capture-btn,
+  #start-record-btn,
+  #stop-record-btn {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin: 10px 5px 0;
+  }
+
+  #capture-btn:hover,
+  #start-record-btn:hover,
+  #stop-record-btn:hover {
+    background-color: #0056b3;
+  }
